@@ -13,81 +13,110 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Ingreso_Producto")
+@Table(name = "INGRESO_PRODUCTO")
 public class IngresoProducto {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
 	private Integer cantidad;
 	
-	@Column(name="fecha_ingreso")
+	@Column(name = "fecha_ingreso")
 	private Date fechaIngreso;
+	
 	private BigDecimal total;
 	
 	@ManyToOne
-	@JoinColumn(name="articulo")
-	private Articulo articulo;
-	
-	@ManyToOne
-	@JoinColumn(name="usuario")
+	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 	
-	public IngresoProducto() {
+	@ManyToOne
+	@JoinColumn(name = "articulo")
+	private Articulo articulo;
 
+	/**
+	 * @return the id
+	 */
+	public Integer getId() {
+		return id;
 	}
 
-	public IngresoProducto(Integer cantidad, Date fechaIngreso, BigDecimal total, Articulo articulo, Usuario usuario) {
-		super();
-		this.cantidad = cantidad;
-		this.fechaIngreso = fechaIngreso;
-		this.total = total;
-		this.articulo = articulo;
-		this.usuario = usuario;
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-
-
+	/**
+	 * @return the cantidad
+	 */
 	public Integer getCantidad() {
 		return cantidad;
 	}
 
+	/**
+	 * @param cantidad the cantidad to set
+	 */
 	public void setCantidad(Integer cantidad) {
 		this.cantidad = cantidad;
 	}
 
+	/**
+	 * @return the fechaIngreso
+	 */
 	public Date getFechaIngreso() {
 		return fechaIngreso;
 	}
 
+	/**
+	 * @param fechaIngreso the fechaIngreso to set
+	 */
 	public void setFechaIngreso(Date fechaIngreso) {
 		this.fechaIngreso = fechaIngreso;
 	}
 
+	/**
+	 * @return the total
+	 */
 	public BigDecimal getTotal() {
 		return total;
 	}
 
+	/**
+	 * @param total the total to set
+	 */
 	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
 
-	public Articulo getArticulo() {
-		return articulo;
-	}
-
-	public void setArticulo(Articulo articulo) {
-		this.articulo = articulo;
-	}
-
+	/**
+	 * @return the usuario
+	 */
 	public Usuario getUsuario() {
 		return usuario;
 	}
 
+	/**
+	 * @param usuario the usuario to set
+	 */
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
 
+	/**
+	 * @return the articulo
+	 */
+	public Articulo getArticulo() {
+		return articulo;
+	}
+
+	/**
+	 * @param articulo the articulo to set
+	 */
+	public void setArticulo(Articulo articulo) {
+		this.articulo = articulo;
+	}
+	
 }

@@ -1,6 +1,7 @@
 package com.tienda.online.controllers;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,64 +18,54 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tienda.online.models.Categoria;
-import com.tienda.online.models.Rol;
 import com.tienda.online.services.CategoriaService;
 
 @RestController
 @RequestMapping("/categoria")
 public class CategoriaController {
 
+private static final Logger logger = LoggerFactory.getLogger(CategoriaController.class); 
+	
 	private CategoriaService categoriaService;
-	private static final Logger logger = LoggerFactory.getLogger(Rol.class); // logs
-
-	public CategoriaController() {
-
-	}
 
 	@Autowired
 	public CategoriaController(CategoriaService categoriaService) {
 		super();
 		this.categoriaService = categoriaService;
 	}
-
-	@PostMapping(produces = "application/json")
-	public Categoria guardarCategoria(@RequestBody @Validated Categoria categoria) {
+	
+	@PostMapping(produces="application/json")
+	public Categoria guardar(@RequestBody @Validated Categoria categoria) {
 		try {
-			return categoriaService.guardar(categoria);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del categoriaController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
+			Categoria cat = categoriaService.guardar(categoria);
+			if(cat == null) {
+				throw new DataIntegrityViolationException("Ya existe una categoría con código: " + categoria.getCodigo());
+			}
+			return cat;
+		} catch (NoSuchElementException e) {
+			logger.info("Error en el consumo del servicio guardaCategoria: " + e.getMessage());
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
-
-	@GetMapping(produces = "application/json")
+	
+	@GetMapping(produces="application/json")
 	public List<Categoria> obtenerTodos() {
 		try {
 			return categoriaService.obtenerTodos();
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del categoriaController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
+		} catch (NoSuchElementException e) {
+			logger.info("Error en el consumo del servicio obtenerTodos: " + e.getMessage());
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
-
-	@PutMapping(produces = "application/json")
-	public Categoria atualizarCategoria(@RequestBody @Validated Categoria categoria) {
-		try {
-			return categoriaService.guardar(categoria);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del categoriaController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	
+	@PutMapping(produces="application/json")
+	public Categoria actualizar(@RequestBody @Validated Categoria categoria) {
+		return categoriaService.guardar(categoria);
 	}
-
-	@RequestMapping(path = "/{id}", produces = "application/json", method = RequestMethod.DELETE)
-	public void eliminar(@PathVariable(value = "id") String id) {
-		try {
-			categoriaService.eliminar(id);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del rolController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	@RequestMapping(path="/{codigo}", produces="application/json", method=RequestMethod.DELETE)
+	public void eliminar(@PathVariable(value="codigo") String codigo) {
+		categoriaService.eliminar(codigo);
 	}
-
 }

@@ -1,6 +1,7 @@
 package com.tienda.online.controllers;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,64 +18,50 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tienda.online.models.Compra;
-import com.tienda.online.models.Usuario;
 import com.tienda.online.services.CompraService;
 
 @RestController
 @RequestMapping("/compra")
 public class CompraController {
 
-	CompraService compraService;
-	private static final Logger logger = LoggerFactory.getLogger(Usuario.class); // logs
-
-	public CompraController() {
-
-	}
+private static final Logger logger = LoggerFactory.getLogger(CompraController.class); 
+	
+	private CompraService compraService;
 
 	@Autowired
 	public CompraController(CompraService compraService) {
 		super();
 		this.compraService = compraService;
 	}
-
-	@PostMapping(produces = "application/json")
-	public Compra guardarCompra(@RequestBody @Validated Compra compra) {
+	
+	@PostMapping(produces="application/json")
+	public Compra guardar(@RequestBody @Validated Compra compra) {
 		try {
 			return compraService.guardar(compra);
 		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del CompraController: " + e.getMessage());
+			logger.info("Error en el consumo del servicio guardaCompra: " + e.getMessage());
 			throw new DataIntegrityViolationException(e.getMessage());
 		}
 	}
-
-	@GetMapping(produces = "application/json")
+	
+	@GetMapping(produces="application/json")
 	public List<Compra> obtenerTodos() {
 		try {
 			return compraService.obtenerTodos();
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del CompraController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
+		} catch (NoSuchElementException e) {
+			logger.info("Error en el consumo del servicio obtenerTodos: " + e.getMessage());
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
-
-	@PutMapping(produces = "application/json")
-	public Compra actualizarCompra(@RequestBody @Validated Compra compra) {
-		try {
-			return compraService.guardar(compra);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del CompraController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	
+	@PutMapping(produces="application/json")
+	public Compra actualizar(@RequestBody @Validated Compra compra) {
+		return compraService.guardar(compra);
 	}
-
-	@RequestMapping(path = "/{id}", produces = "application/json", method = RequestMethod.DELETE)
-	public void eliminar(@PathVariable(value = "id") Integer id) {
-		try {
-			compraService.eliminar(id);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del compraController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	@RequestMapping(path="/{codigo}", produces="application/json", method=RequestMethod.DELETE)
+	public void eliminar(@PathVariable(value="codigo") Integer codigo) {
+		compraService.eliminar(codigo);
 	}
-
 }

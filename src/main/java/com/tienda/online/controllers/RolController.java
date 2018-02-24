@@ -1,6 +1,7 @@
 package com.tienda.online.controllers;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,57 +24,48 @@ import com.tienda.online.services.RolService;
 @RequestMapping("/rol")
 public class RolController {
 
-	RolService rolService;
-	private static final Logger logger = LoggerFactory.getLogger(Rol.class); // logs
-
-	public RolController() {
-
-	}
+private static final Logger logger = LoggerFactory.getLogger(RolController.class); 
+	
+	private RolService rolService;
 
 	@Autowired
 	public RolController(RolService rolService) {
 		super();
 		this.rolService = rolService;
 	}
-
-	@PostMapping(produces = "application/json")
-	public Rol guardarRol(@RequestBody @Validated Rol rol) {
+	
+	@PostMapping(produces="application/json")
+	public Rol guardar(@RequestBody @Validated Rol rol) {
 		try {
-			return rolService.guardar(rol);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del RolController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
+			Rol newRol = rolService.guardar(rol);
+			if(newRol == null) {
+				throw new DataIntegrityViolationException("Ya existe un rol con nombre: " + rol.getRol());
+			}
+			return newRol;
+		} catch (NoSuchElementException e) {
+			logger.info("Error en el consumo del servicio guardaRol: " + e.getMessage());
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
-
-	@GetMapping(produces = "application/json")
+	
+	@GetMapping(produces="application/json")
 	public List<Rol> obtenerTodos() {
 		try {
 			return rolService.obtenerTodos();
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del RolController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
+		} catch (NoSuchElementException e) {
+			logger.info("Error en el consumo del servicio obtenerTodos: " + e.getMessage());
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
-
-	@PutMapping(produces = "application/json")
-	public Rol atualizarRol(@RequestBody @Validated Rol rol) {
-		try {
-			return rolService.guardar(rol);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del rolController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	
+	@PutMapping(produces="application/json")
+	public Rol actualizar(@RequestBody @Validated Rol rol) {
+		return rolService.guardar(rol);
 	}
-
-	@RequestMapping(path = "/{id}", produces = "application/json", method = RequestMethod.DELETE)
-	public void eliminar(@PathVariable(value = "id") Integer id) {
-		try {
-			rolService.eliminar(id);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del rolController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	@RequestMapping(path="/{id}", produces="application/json", method=RequestMethod.DELETE)
+	public void eliminar(@PathVariable(value="id") Integer id) {
+		rolService.eliminar(id);
 	}
-
 }

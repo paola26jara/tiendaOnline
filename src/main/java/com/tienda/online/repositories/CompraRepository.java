@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.tienda.online.models.Compra;
 
 @Repository
-public interface CompraRepository  extends CrudRepository<Compra, Integer>{
+public interface CompraRepository extends CrudRepository<Compra, Integer>{
 
 }

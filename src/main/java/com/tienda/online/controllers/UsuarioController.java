@@ -7,9 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-
 import org.springframework.validation.annotation.Validated;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,24 +15,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.tienda.online.models.Usuario;
-
 import com.tienda.online.services.UsuarioService;
 
 @RestController
 @RequestMapping("/usuario")
-public class UsuarioController extends BaseController  {
+public class UsuarioController extends BaseController{
 
-	UsuarioService usuarioService;
-	private static final Logger logger = LoggerFactory.getLogger(Usuario.class); // logs
-
-	public UsuarioController() {
-
-	}
+private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class); 
+	
+	private UsuarioService usuarioService;
 
 	@Autowired
 	public UsuarioController(UsuarioService usuarioService) {
@@ -42,58 +34,45 @@ public class UsuarioController extends BaseController  {
 		this.usuarioService = usuarioService;
 	}
 	
-	/*
-	 * hola pao
+	/**
+	 * Metodo que permite guardar un usuario
+	 * @param usuario
+	 * @return
 	 */
-	
-	
-
-	@PostMapping(produces = "application/json")
-	public Usuario guardarUsuario(@RequestBody @Validated Usuario usuario) {
+	@PostMapping(produces="application/json")
+	public Usuario guardar(@RequestBody @Validated Usuario usuario) {
 		try {
-			Usuario nuevoUsuario= usuarioService.guardar(usuario);
-			if(nuevoUsuario==null)
-			{
-				throw new DataIntegrityViolationException("Ya existe un usuario con el emali:"+usuario.getEmail());
-				
+			Usuario nuevoUsuario = usuarioService.guardar(usuario);
+			if(nuevoUsuario == null) {
+				throw new DataIntegrityViolationException("Ya existe un usuario con el email: " + usuario.getEmail());
 			}
 			return nuevoUsuario;
-			
 		} catch (NoSuchElementException e) {
-			logger.info("Error en el consumo de servicio guardar Usuario:"+e.getMessage());
-				throw new DataIntegrityViolationException("Error en el consumo del servicio: ");
+			logger.info("Error en el consumo del servicio guardar Usuario: " + e.getMessage());
+			throw new NoSuchElementException("Error en el consumo del servicio guardar Usuario: ");
 		}
+		
 	}
-
-	@GetMapping(produces = "application/json")
+	
+	@GetMapping(produces="application/json")
 	public List<Usuario> obtenerTodos() {
 		try {
 			return usuarioService.obtenerTodos();
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del UsuarioController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
+		} catch (NoSuchElementException e) {
+			logger.info("Error en el consumo del servicio obtenerTodos: " + e.getMessage());
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
-
-	@PutMapping(produces = "application/json")
-	public Usuario actualizarUsuario(@RequestBody @Validated Usuario usuario) {
-		try {
-			return usuarioService.guardar(usuario);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del UsuarioController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	
+	@PutMapping(produces="application/json")
+	public Usuario actualizar(@RequestBody @Validated Usuario usuario) {
+		return usuarioService.guardar(usuario);
 	}
-
-	@RequestMapping(path = "/{id}", produces = "application/json", method = RequestMethod.DELETE)
-	public void eliminar(@PathVariable(value = "id") Integer id) {
-		try {
-			usuarioService.eliminar(id);
-		} catch (DataIntegrityViolationException e) {
-			logger.info("Error en el servicio del usuarioController: " + e.getMessage());
-			throw new DataIntegrityViolationException(e.getMessage());
-		}
+	
+	@RequestMapping(path="/{id}", produces="application/json", method=RequestMethod.DELETE)
+	public void eliminar(@PathVariable(value="id") Integer id) {
+		usuarioService.eliminar(id);
 	}
-
 
 }

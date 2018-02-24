@@ -14,36 +14,26 @@ public class UsuarioService {
 
 	private UsuarioRepository usuarioRepository;
 
-	public UsuarioService() {
-
-	}
 	@Autowired
 	public UsuarioService(UsuarioRepository usuarioRepository) {
 		super();
 		this.usuarioRepository = usuarioRepository;
 	}
-
 	
 	public Usuario guardar(Usuario usuario) {
 		usuario.setFecha(new Date());
-		Usuario usuarioexiste= usuarioRepository.findByEmail(usuario.getEmail());
-		if(usuarioexiste==null){
-		return usuarioRepository.save(usuario);
+		Usuario usuarioExiste = usuarioRepository.findByEmail(usuario.getEmail());
+		if (usuarioExiste == null) {
+			return usuarioRepository.save(usuario);
 		}
 		return null;
-		
 	}
-
-	public List<Usuario> obtenerTodos() {
+	
+	public List<Usuario> obtenerTodos(){
 		return (List<Usuario>) usuarioRepository.findAll();
 	}
-
-	public long total() {
-		return usuarioRepository.count();
+	
+	public void eliminar(Integer codigo) {
+		usuarioRepository.delete(codigo);
 	}
-
-	public void eliminar(Integer id) {
-		usuarioRepository.delete(id);
-	}
-
 }

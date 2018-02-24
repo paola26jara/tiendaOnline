@@ -11,32 +11,23 @@ import com.tienda.online.repositories.CategoriaRepository;
 @Service
 public class CategoriaService {
 
-	@Autowired
 	private CategoriaRepository categoriaRepository;
 
-	public CategoriaService() {
-
-	}
-
+	@Autowired
 	public CategoriaService(CategoriaRepository categoriaRepository) {
 		super();
 		this.categoriaRepository = categoriaRepository;
 	}
-
+	
 	public Categoria guardar(Categoria categoria) {
 		return categoriaRepository.save(categoria);
 	}
-
-	public List<Categoria> obtenerTodos() {
+	
+	public List<Categoria> obtenerTodos(){
 		return (List<Categoria>) categoriaRepository.findAll();
 	}
-
-	public long total() {
-		return categoriaRepository.count();
+	
+	public void eliminar(String codigo) {
+		categoriaRepository.delete(codigo);
 	}
-
-	public void eliminar(String id) {
-		categoriaRepository.delete(id);
-	}
-
 }

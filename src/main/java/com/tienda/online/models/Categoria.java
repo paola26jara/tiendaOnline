@@ -7,36 +7,36 @@ import javax.persistence.Id;
 public class Categoria {
 	
 	@Id
-	private String id;
+	private String codigo;
+	
 	private String nombre;
 
-	public Categoria() {
-	}
-	
-	
-
-	public Categoria(String id, String nombre) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
+	/**
+	 * @return the codigo
+	 */
+	public String getCodigo() {
+		return codigo;
 	}
 
-
-
-	public String getId() {
-		return id;
+	/**
+	 * @param codigo the codigo to set
+	 */
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
+	/**
+	 * @return the nombre
+	 */
 	public String getNombre() {
 		return nombre;
 	}
 
+	/**
+	 * @param nombre the nombre to set
+	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-
+	
 }

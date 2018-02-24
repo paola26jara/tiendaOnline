@@ -1,7 +1,9 @@
 package com.tienda.online.services;
 
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tienda.online.models.IngresoProducto;
@@ -12,29 +14,22 @@ public class IngresoProductoService {
 
 	private IngresoProductoRepository ingresoProductoRepository;
 
-	public IngresoProductoService() {
-
-	}
-
+	@Autowired
 	public IngresoProductoService(IngresoProductoRepository ingresoProductoRepository) {
 		super();
 		this.ingresoProductoRepository = ingresoProductoRepository;
 	}
-
-	public IngresoProducto guardar(IngresoProducto rol) {
-		return ingresoProductoRepository.save(rol);
+	
+	public IngresoProducto guardar(IngresoProducto ingresoProducto) {
+		ingresoProducto.setFechaIngreso(new Date());
+		return ingresoProductoRepository.save(ingresoProducto);
 	}
-
-	public List<IngresoProducto> obtenerTodos() {
+	
+	public List<IngresoProducto> obtenerTodos(){
 		return (List<IngresoProducto>) ingresoProductoRepository.findAll();
 	}
-
-	public long total() {
-		return ingresoProductoRepository.count();
+	
+	public void eliminar(Integer codigo) {
+		ingresoProductoRepository.delete(codigo);
 	}
-
-	public void eliminar(Integer id) {
-		ingresoProductoRepository.delete(id);
-	}
-
 }
