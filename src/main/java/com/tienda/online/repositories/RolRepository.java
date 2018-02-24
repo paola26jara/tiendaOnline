@@ -8,5 +8,4 @@ import com.tienda.online.models.Rol;
 @Repository
 public interface RolRepository extends CrudRepository<Rol, Integer>{
 
-  Rol FindByRol(String rol);
 }
