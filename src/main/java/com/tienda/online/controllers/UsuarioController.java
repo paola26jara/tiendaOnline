@@ -41,6 +41,12 @@ public class UsuarioController extends BaseController  {
 		super();
 		this.usuarioService = usuarioService;
 	}
+	
+	/*
+	 * hola pao
+	 */
+	
+	
 
 	@PostMapping(produces = "application/json")
 	public Usuario guardarUsuario(@RequestBody @Validated Usuario usuario) {
